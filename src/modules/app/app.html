@@ -1,0 +1,29 @@
+<md-toolbar>
+  <div class="md-toolbar-tools" layout="row" layout-align="end center">
+    <md-button class="md-icon-button" aria-label="More" ng-click="$root.toggleDarkMode()">
+      <i class="material-icons">settings_brightness</i>
+    </md-button>
+  </div>
+</md-toolbar>
+<section flex layout>
+
+  <md-sidenav class="md-sidenav-left" md-component-id="left-sidenav" md-is-locked-open="true" md-whiteframe="2" flex>
+
+    <md-content>
+
+      <md-list-item ui-sref="app.investir.listagem">
+        <i class="material-icons mr-8">attach_money</i>
+        <p> Investir </p>
+      </md-list-item>
+      <md-list-item ui-sref="app.resgatar">
+        <i class="material-icons mr-8">save_alt</i>
+        <p> Resgatar </p>
+      </md-list-item>
+
+    </md-content>
+
+  </md-sidenav>
+
+  <md-content flex layout-padding ui-view></md-content>
+
+</section>

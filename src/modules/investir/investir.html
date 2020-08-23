@@ -1,0 +1,61 @@
+<h5 class="mb-0">Investir</h5>
+<h1 class="mt-0" md-colors="{color: 'accent'}">FUNDOS DE INVESTIMENTO</h1>
+<p>Invista em fundos e diversifique seus investimentos rentabilizando ainda mais a sua carteira. Selecionamos os
+  melhores fundos de diversas categorias de acordo com o seu perfil de investimentos.</p>
+<p>Compare, escolha e invista no melhor fundo para você.</p>
+
+<div st-safe-src="vm.ativosParaInvestir" st-table="ativos">
+
+  <table class="product-table">
+    <thead>
+      <tr>
+        <th valign="bottom" rowspan="2" colspan="2" class="text-left" st-sort="nome">Nome</th>
+        <th valign="bottom" rowspan="2" class="text-left">CNPJ Fundo</th>
+        <th valign="bottom" rowspan="2" class="text-right" st-sort="investimentoMinimo">Investimento mín.</th>
+        <th valign="bottom" colspan="3">Rentabilidade</th>
+        <th valign="bottom" rowspan="2"></th>
+      </tr>
+      <tr>
+        <th valign="bottom" class="text-right" st-sort="rentabilidade12m">12m</th>
+        <th valign="bottom" class="text-right" st-sort="rentabilidade24m">24m</th>
+        <th valign="bottom" class="text-right" st-sort="rentabilidade36m" st-sort-default="reverse">36m</th>
+      </tr>
+    </thead>
+    <tbody ng-if="vm.loading">
+      <tr>
+        <td colspan="8">
+          <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+        </td>
+      </tr>
+    </tbody>
+    <tbody ng-repeat="a in ativos track by a.id" md-colors="!!a.expanded ? { background: 'accent-300-.5' } : ''">
+      <tr>
+        <td>
+          <md-button class="md-icon-button mx-0" ng-click="a.expanded = !a.expanded">
+            <i class="material-icons" ng-if="!a.expanded">arrow_drop_down</i>
+            <i class="material-icons" ng-if="!!a.expanded">arrow_drop_up</i>
+          </md-button>
+        </td>
+        <td class="text-left" ng-bind="a.nome"></td>
+        <td class="text-left" ng-bind="a.cnpj | cnpj"></td>
+        <td class="text-right" ng-bind="a.investimentoMinimo | currency"></td>
+        <td class="text-right" md-colors="a.rentabilidade12m < 0 ? {color : 'red-600'} : ''"
+          ng-bind="(a.rentabilidade12m | number:2) + '%'"></td>
+        <td class="text-right" md-colors="a.rentabilidade24m < 0 ? {color : 'red-600'} : ''"
+          ng-bind="(a.rentabilidade24m | number:2) + '%'"></td>
+        <td class="text-right" md-colors="a.rentabilidade36m < 0 ? {color : 'red-600'} : ''"
+          ng-bind="(a.rentabilidade36m | number:2) + '%'"></td>
+        <td class="text-right">
+          <md-button class="md-icon-button mx-0" ui-sref="app.investir.boleta({id: a.id, ativo: a})">
+            <i class="material-icons">shopping_cart</i>
+          </md-button>
+        </td>
+      </tr>
+      <tr ng-if="!!a.expanded">
+        <td colspan="8" style="border-bottom: 1px solid;" md-colors="{'border-bottom-color': 'accent-A700'}">
+          <h4 class="ml-16">Informações do Fundo</h4>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

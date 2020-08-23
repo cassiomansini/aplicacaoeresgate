@@ -1,0 +1,14 @@
+﻿import 'angular';
+import 'angular-animate';
+import 'angular-aria';
+import 'angular-input-masks';
+import 'angular-material';
+import 'angular-md5';
+import 'angular-messages';
+import 'angular-moment';
+import 'angular-sanitize';
+import 'angular-smart-table';
+import 'angular-ui-router';
+import 'angular-filter';
+import 'moment';
+import 'angular-i18n/angular-locale_pt-br.js';

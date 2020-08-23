@@ -1,0 +1,139 @@
+<h5 class="mb-0">
+  <a ui-sref="app.investir.listagem" class="md-accent">Investir</a>
+  / Boleta
+</h5>
+
+<md-progress-circular class="mt-16 mx-auto" md-mode="indeterminate" ng-if="vm.loading"></md-progress-circular>
+
+<div ng-if="!!vm.ativo">
+
+  <h4 class="mb-0">Você está investindo em:</h4>
+
+  <h1 class="my-0" md-colors="{color: 'accent'}" ng-bind="vm.ativo.nome"></h1>
+  <h4 class="mt-0">{{vm.ativo.cnpj | cnpj}}</h4>
+
+  <div class="grid-informacoes-produto" layout="row" layout-wrap layout-align="start start">
+    <div>
+      <p class="text-muted mb-0 font-size-80">Investimento Inicial</p>
+      <p class="mt-0">{{vm.ativo.investimentoMinimo | currency}}</p>
+
+      <p class="text-muted mb-0 font-size-80">Movimentação mínima</p>
+      <p class="mt-0">{{vm.ativo.investimentoMinimo | currency}}</p>
+
+      <p class="text-muted mb-0 font-size-80">Saldo mínimo</p>
+      <p class="mt-0">{{vm.ativo.investimentoMinimo | currency}}</p>
+    </div>
+
+    <md-divider class="mx-16 align-self-stretch"></md-divider>
+
+    <div>
+      <p class="text-muted mb-0 font-size-80">Cotização Aplicação</p>
+      <p class="mt-0">D+1</p>
+
+      <p class="text-muted mb-0 font-size-80">Cotização Resgate</p>
+      <p class="mt-0">Consultar Lâmina</p>
+
+      <p class="text-muted mb-0 font-size-80">Liquidação Resgate</p>
+      <p class="mt-0">Consultar Lâmina</p>
+
+      <p class="text-muted mb-0 font-size-80">Taxa Resgate Antecipado</p>
+      <p class="mt-0">{{5 | number}}%</p>
+    </div>
+
+    <md-divider class="mx-16 align-self-stretch"></md-divider>
+
+    <div>
+      <p class="text-muted mb-0 font-size-80">Horário Limite Movimentação</p>
+      <p class="mt-0">09:00 a 13:00</p>
+
+      <p class="text-muted mb-0 font-size-80">Taxa de Administração</p>
+      <p class="mt-0">{{1.85 | number}}%</p>
+
+      <p class="text-muted mb-0 font-size-80">Taxa de Performance</p>
+      <p class="mt-0">{{20 | number}}%</p>
+    </div>
+
+    <span flex></span>
+
+    <div>
+      <p class="text-muted mb-0 font-size-80">Downloads</p>
+
+      <md-button class="md-accent mx-0" layout="row" layout-align="start center">
+        <i class="material-icons mr-16">get_app</i>
+        Arquivo 1
+      </md-button>
+      <md-button class="md-accent mx-0" layout="row" layout-align="start center">
+        <i class="material-icons mr-16">get_app</i>
+        Arquivo 2
+      </md-button>
+      <md-button class="md-accent mx-0" layout="row" layout-align="start center">
+        <i class="material-icons mr-16">get_app</i>
+        Arquivo Com Nome Grande 3
+      </md-button>
+    </div>
+  </div>
+
+</div>
+
+<pre>{{boletaForm}}</pre>
+
+<md-card class="boleta mt-32 mx-0 mb-0" ng-if="!!vm.ativo" layout-padding style="z-index: 1; position: relative;">
+  <form name="boletaForm" ng-submit="boletaForm.$valid ? vm.boletar() : void(0)">
+    <div>
+      <label>Data da Aplicação</label>
+      <md-datepicker class="md-accent" ng-model="vm.request.dataAplicacao" md-min-date="vm.minDate"
+        md-placeholder="Data da Aplicação" md-date-filter="vm.excluirFinaisDeSemana"
+        ng-change="vm.calcularDatasCotLiq()" ng-disabled="vm.loadingBoleta || vm.investimentoConcluido">
+      </md-datepicker>
+    </div>
+
+    <div layout="row" layout-align="start start" class="mt-16">
+      <div class="mr-8">
+        <p class="mb-0 text-muted font-size-80">Liquidação</p>
+        <p class="mt-0">{{vm.dataLiquidacao | date: 'dd/MM'}}</p>
+      </div>
+      <div>
+        <p class="mb-0 text-muted font-size-80">Cotização</p>
+        <p class="mt-0">{{vm.dataCotizacao | date: 'dd/MM'}}</p>
+      </div>
+    </div>
+
+    <md-checkbox ng-model="vm.request.termoRisco" aria-label="Termo de Adesão e Risco"
+      ng-disabled="vm.loadingBoleta || vm.investimentoConcluido">
+      <strong>Declaro que lí e estou de acordo</strong> com o termo de adesão e ciência de risco
+    </md-checkbox>
+
+    <div layout="row" layout-align="end center">
+      <md-input-container class="hide-errors-spacer" style="width: 130px;">
+        <label>Valor</label>
+        <input ng-model="vm.request.valor" type="text" ui-money-mask required
+          ng-disabled="vm.loadingBoleta || vm.investimentoConcluido">
+      </md-input-container>
+    </div>
+
+    <div layout="row" layout-align="end center">
+
+      <i class="material-icons">lock</i>
+      <md-input-container class="hide-errors-spacer" style="width: 130px;">
+        <label>Senha Eletrônica</label>
+        <input ng-model="vm.request.userpass" type="{{showPw ? 'text' : 'password'}}" required
+          ng-disabled="vm.loadingBoleta || vm.investimentoConcluido">
+      </md-input-container>
+      <md-button class="md-icon-button" aria-label="More" ng-click="showPw = !showPw">
+        <i class="material-icons">visibility</i>
+      </md-button>
+
+      <md-button class="md-accent md-raised font-size-125 px-16 ml-32" aria-label="Aplicar" type="submit"
+        ng-disabled="vm.loadingBoleta || vm.investimentoConcluido" layout="row" layout-align="center center">
+        Aplicar
+        <md-progress-circular ng-if="vm.loadingBoleta" md-diameter="24" class="ml-16"></md-progress-circular>
+      </md-button>
+
+    </div>
+
+  </form>
+</md-card>
+
+<md-card class="mx-0 n-mt-16 pt-16 px-16" ng-if="!!vm.investimentoConcluido" md-colors="{'background': 'green-800'}">
+  <h2>Investimento executado com sucesso</h2>
+</md-card>

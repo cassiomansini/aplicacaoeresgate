@@ -1,0 +1,56 @@
+﻿
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.no-wrap { white-space: no-wrap; }
+
+.currency { text-align: right; }
+
+.text-muted { opacity: 0.7; }
+
+.txt-smaller { font-size: .6rem !important; }
+.txt-bigger { font-size: 1.15rem !important; }
+
+.text-left {   text-align: left !important; }
+.text-center { text-align: center !important; }
+.text-right {  text-align: right !important; }
+
+.light {   font-weight: 300 !important; }
+.regular { font-weight: 400 !important; }
+.bold {    font-weight: 600 !important; }
+.black {   font-weight: 700 !important; }
+
+h1, h2, h3, h4, h5, .md-headline { 
+  font-weight: 400;
+}
+
+.uppercase { text-transform: uppercase; }
+.lowercase { text-transform: lowercase; }
+
+.height-initial { height: initial !important; }
+
+heights = 100 200 300 400 500
+for h in heights {
+  .min-height-{h} { min-height: unit(h, px) !important; }
+}
+
+fontsizes = 70 80 90 100 125
+for num in fontsizes {
+  .font-size-{num} { font-size: unit(num / 100, rem) !important; }
+  .relative-font-size-{num} { font-size: unit(num / 100, em) !important; }
+}
+
+lhs = 100 130 200
+for num in lhs {
+  .line-height-{num} { line-height: (num / 100); }
+}
+
+.md-button {
+  line-height: initial;
+
+  md-item & {
+    min-height: 44px;
+    font-weight: 600;
+  }
+}
