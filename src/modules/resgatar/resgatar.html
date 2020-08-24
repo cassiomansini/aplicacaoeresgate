@@ -1,1 +1,140 @@
-<h1>Resgatar</h1>
+<h5 class="mb-0">Posição</h5>
+<h1 class="mt-0" md-colors="{color: 'accent'}">FUNDOS DE INVESTIMENTO</h1>
+<p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Earum dignissimos cupiditate consequuntur laborum tenetur
+  odit.</p>
+
+<div st-safe-src="vm.ativos" st-table="ativos">
+
+  <table class="product-table">
+    <thead>
+      <tr>
+        <th colspan="2" class="text-left">Nome</th>
+        <th class="text-right">Saldo Mín. Permanência</th>
+        <th class="text-right">Movimentação Mínima</th>
+        <th class="text-right">Posição Atual</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody ng-if="vm.loading">
+      <tr>
+        <td colspan="6">
+          <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+        </td>
+      </tr>
+    </tbody>
+    <tbody ng-repeat="a in ativos track by a.id" md-colors="!!a.expanded ? { background: 'accent-300-.5' } : ''">
+      <tr>
+        <td>
+          <md-button class="md-icon-button mx-0" ng-click="a.expanded = !a.expanded">
+            <i class="material-icons" ng-if="!a.expanded">arrow_drop_down</i>
+            <i class="material-icons" ng-if="!!a.expanded">arrow_drop_up</i>
+          </md-button>
+        </td>
+        <td class="text-left" ng-bind="a.nome"></td>
+        <td class="text-right" ng-bind="a.saldoMinimoPermanencia | currency"></td>
+        <td class="text-right" ng-bind="a.movimentacaoMinima | currency"></td>
+        <td class="text-right" ng-bind="a.valorBruto | currency"></td>
+        <td>
+          <md-button class="md-accent md-raised px-16" layout="row" layout-align="center center"
+            ng-disabled="!a.podeResgatar" ng-click="vm.openModalResgate($event, a)">
+            <i class="material-icons mr-8">save_alt</i>
+            <span>Resgatar</span>
+          </md-button>
+        </td>
+      </tr>
+      <tr ng-if="!!a.expanded">
+        <td colspan="6" style="border-bottom: 1px solid;" md-colors="{'border-bottom-color': 'accent-A700'}">
+          <h4 class="ml-16">Informações da posicao</h4>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script type="text/ng-template" id="dialog_resgate.tmpl.html">
+  <md-dialog aria-label="Resgatar" style="width: 600px; max-width: 100%;">
+
+    <md-dialog-content class="p-16">
+
+      <h5 class="mb-0">Resgatar</h5>
+      <h2 class="mt-0" md-colors="{color: 'accent'}">{{ativo.nome}}</h2>
+
+      <form name="resgateForm" ng-submit="resgateForm.$valid ? resgatar() : void(0)">
+        <div>
+          <label>Data Resgate</label>
+          <md-datepicker class="md-accent" ng-model="request.dataMovimentacao" md-min-date="minDate"
+            md-placeholder="Data da Aplicação" md-date-filter="excluirFinaisDeSemana"
+            ng-change="calcularDatasCotLiq()" ng-disabled="loading">
+          </md-datepicker>
+        </div>
+
+        <div layout="row" layout-align="start start" class="mt-16">
+          <div class="mr-8">
+            <p class="mb-0 text-muted font-size-80">Liquidação</p>
+            <p class="mt-0">{{dataLiquidacao | date: 'dd/MM'}}</p>
+          </div>
+          <div>
+            <p class="mb-0 text-muted font-size-80">Cotização</p>
+            <p class="mt-0">{{dataCotizacao | date: 'dd/MM'}}</p>
+          </div>
+        </div>
+
+        <div layout="row" layout-align="end end">
+          <div>
+            <p class="mb-0 text-muted font-size-80">Movimentação Mínima</p>
+            <p class="mt-0">{{ativo.movimentacaoMinima | currency}}</p>
+            <p class="mb-0 text-muted font-size-80">Saldo Mínimo de Permanência</p>
+            <p class="mt-0">{{ativo.saldoMinimoPermanencia | currency}}</p>
+            <p class="mb-0 text-muted font-size-80">Sua posição</p>
+            <p class="mt-0">{{ativo.valorBruto | currency}}</p>
+          </div>
+          <span flex></span>
+          <div>
+            <div layout="column" layout-align="end center">
+              <md-input-container class="hide-errors-spacer" style="width: 170px;">
+                <label>Valor do Resgate</label>
+                <input ng-model="request.valorMovimentacao" type="text" ui-money-mask required
+                  ng-disabled="loading || resgateTotal">
+              </md-input-container>
+
+              <md-checkbox ng-model="resgateTotal" ng-change="resgateTotal ? request.valorMovimentacao = ativo.valorBruto : void(0)" aria-label="Termo de Adesão e Risco"
+                ng-disabled="loading" min="ativo.movimentacaoMinima">
+                Resgate Total
+              </md-checkbox>
+            </div>
+          </div>
+        </div>
+
+
+        <div layout="row" layout-align="end center">
+
+          <md-button class="mx-0 md-warn" ng-click="cancel()">
+            cancelar
+          </md-button>
+
+          <span flex></span>
+
+          <i class="material-icons">lock</i>
+          <md-input-container class="hide-errors-spacer my-0" style="width: 130px;">
+            <label>Senha Eletrônica</label>
+            <input ng-model="request.userpass" type="{{showPw ? 'text' : 'password'}}" required
+              ng-disabled="loading || investimentoConcluido">
+          </md-input-container>
+          <md-button class="md-icon-button" aria-label="More" ng-click="showPw = !showPw">
+            <i class="material-icons">visibility</i>
+          </md-button>
+
+          <md-button class="md-accent md-raised font-size-125 px-16 ml-32" aria-label="Aplicar" type="submit"
+            ng-disabled="loading || investimentoConcluido" layout="row" layout-align="center center">
+            Resgatar
+            <md-progress-circular ng-if="loading" md-diameter="24" class="ml-16"></md-progress-circular>
+          </md-button>
+
+        </div>
+
+      </form>
+
+    </md-dialog-content>
+
+  </md-dialog>
+</script>

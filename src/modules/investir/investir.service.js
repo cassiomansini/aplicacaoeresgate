@@ -1,6 +1,6 @@
-investirService.$inject = ['$q', '$timeout']
+investirService.$inject = ['$q', '$timeout', 'md5', '$window']
 
-function investirService($q, $timeout) {
+function investirService($q, $timeout, md5, $window) {
   const service = {}
 
   service.obterAtivosParaInvestir = obterAtivosParaInvestir
@@ -70,7 +70,7 @@ function investirService($q, $timeout) {
 
     $timeout(() => {
       deferred.resolve(service.produtos);
-    }, (Math.floor(Math.random() * 5) + 1) * 1000)
+    }, (Math.floor(Math.random() * 2) + 1) * 1000)
 
     return promise;
   }
@@ -86,18 +86,38 @@ function investirService($q, $timeout) {
     return promise;
   }
 
-  function aplicar(idAtivo, request) {
-    console.log('idAtivo:', idAtivo)
-    console.log('request:', request)
+  function aplicar(request) {
+    const movimentacao = {
+      "id": md5.createHash(`${request.id}${request.valorMovimentacao}${Math.floor(Math.random() * 1000) + 1}`),
+      "nome": request.nome,
+      "valorBruto": request.valorMovimentacao,
+      "saldoMinimoPermanencia": 100.0,
+      "movimentacaoMinima": 100.0,
+      "horarioCorte": "14:00:00",
+      "podeResgatar": true
+    }
+
+    salvarNovaPosicao(movimentacao)
 
     const deferred = $q.defer();
     const promise = deferred.promise;
 
     $timeout(() => {
       deferred.resolve(true);
-    }, (Math.floor(Math.random() * 15) + 1) * 1000)
+    }, (Math.floor(Math.random() * 3) + 1) * 1000)
 
     return promise;
+  }
+
+
+  function salvarNovaPosicao(ativo) {
+    const ativosPosicao = JSON.parse($window.sessionStorage.getItem('ativos-para-resgate')).filter(a => a.id !== ativo.id)
+
+    if (ativo.valorBruto !== 0) {
+      ativosPosicao.push(ativo)
+    }
+
+    $window.sessionStorage.setItem('ativos-para-resgate', JSON.stringify(ativosPosicao))
   }
 
   return service;

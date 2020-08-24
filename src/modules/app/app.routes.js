@@ -3,10 +3,7 @@ export default function routes($stateProvider) {
     .state('app', {
       url: '',
       abstract: true,
-      template: require('./app.html'),
-      controller: 'AppCtrl',
-      controllerAs: 'vm',
-      bindToController: true
+      template: require('./app.html')
     });
 }
 routes.$inject = ['$stateProvider'];

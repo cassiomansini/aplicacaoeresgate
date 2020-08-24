@@ -15,7 +15,7 @@ function InvestirController($stateParams, $mdToast, $filter, InvestirService, mo
 
     vm.request = {};
 
-    vm.minDate = moment().toDate()
+    vm.minDate = moment('2020-10-20').toDate()
     vm.request.dataAplicacao = angular.copy(vm.minDate)
     calcularDatasCotLiq()
 
@@ -58,9 +58,18 @@ function InvestirController($stateParams, $mdToast, $filter, InvestirService, mo
       return
     }
 
+    const movimentacao = {
+      "tipoOperacao": 1,
+      "id": $stateParams.id,
+      "nome": vm.ativo.nome,
+      "cpfCliente": "37444448302",
+      "valorMovimentacao": vm.request.valor,
+      "dataMovimentacao": vm.request.dataAplicacao
+    }
+
     vm.loadingBoleta = true;
 
-    InvestirService.aplicar($stateParams.id, vm.request)
+    InvestirService.aplicar(movimentacao)
       .then(response => {
         vm.investimentoConcluido = response;
       })

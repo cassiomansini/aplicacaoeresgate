@@ -1,8 +1,13 @@
 ﻿export default ['$stateProvider', function routes($stateProvider) {
   $stateProvider
     .state('app.resgatar', {
-      url: '/',
-      controller: 'ResgatarCtrl',
+      url: '/resgatar',
+      abstract: true,
+      template: "<main ui-view></main>"
+    })
+    .state('app.resgatar.listagem', {
+      url: '',
+      controller: 'ResgatarController',
       controllerAs: 'vm',
       bindToController: true,
       templateProvider: ['$q', function ($q) {
@@ -12,5 +17,6 @@
         });
         return deferred.promise;
       }]
-    });
+    })
+    ;
 }];

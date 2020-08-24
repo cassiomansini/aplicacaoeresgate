@@ -50,8 +50,7 @@
     "webpack-sources": "^1.0.1"
   },
   "scripts": {
-    "Aprestart": "npm install",
-    "start": "webpack-dev-server --progress --open --env.ambiente=local",
-    "build-prd": "webpack --env.ambiente=prd"
+    "prestart": "npm install",
+    "start": "webpack-dev-server --progress --open --env.ambiente=local"
   }
 }
